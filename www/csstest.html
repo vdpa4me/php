@@ -1,0 +1,60 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+</head>
+<body>
+<div class="w3-container w3-teal">
+  <h1>My Header</h1>
+</div>
+
+<div>
+ <p> hello world</p>
+ 
+ <$php
+     require_once 'sql_conn.php';
+    
+    $lv = $_GET['lv'];
+    
+    echo "<br>";   
+    echo "Level " . $lv . "<br>";
+    $conn = new mysqli($hn, $un, $pw, $db);
+    if($conn->connect_error){ 
+        die($conn->connect_error);
+        echo "DB connection failed" . "<br>";
+    }
+    else{
+        $query = "SELECT * FROM sentences WHERE level LIKE {$lv} ORDER BY main_key";
+        $result = $conn->query($query);
+        if (!@result){ 
+            die($conn->error);
+            echo "Query failed" . "<br>";
+        }
+        else{
+            echo "<br>";
+            echo "<table>";
+            $rows = $result->num_rows;
+            for ($j = 0 ; $j < $rows; ++$j )
+            {
+                echo "<tr>";
+                $result->data_seek($j);
+                echo "<td>" . $result->fetch_assoc() ['main_key'] . "</td>";
+                $result->data_seek($j);
+                echo "<td>" . $result->fetch_assoc() ['korean'] . "</td>";
+                $result->data_seek($j);
+                echo "<td>" . $result->fetch_assoc() ['english'] . "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        }
+    }
+ $>
+ 
+</div>
+
+<div class="w3-container w3-teal">
+  <p>My Footer</p>
+</div>
+</body>
+</html>
